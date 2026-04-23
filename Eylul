@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Şans Oyunu</title>
+
+<style>
+body {
+  text-align: center;
+  font-family: Arial;
+  background: #111;
+  color: white;
+  margin-top: 100px;
+}
+
+button {
+  padding: 20px 40px;
+  font-size: 25px;
+  border: none;
+  border-radius: 10px;
+  background: lime;
+  color: black;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Şans Oyunu</h1>
+
+<button id="btn">BAS</button>
+
+<script>
+const btn = document.getElementById("btn");
+
+const sesler = [
+  {text:"5 adım ilerle", chance:2},
+  {text:"1 adım ilerle", chance:13},
+  {text:"Pas", chance:5},
+  {text:"Başa dön", chance:5},
+  {text:"2 adım ilerle", chance:6},
+  {text:"3 adım ilerle", chance:4},
+  {text:"4 adım ilerle", chance:5},
+  {text:"Oyunu kazandın", chance:1},
+  {text:"0 adım ilerle", chance:9},
+  {text:"6 adım ilerle", chance:1},
+  {text:"5 adım geri git", chance:5},
+  {text:"4 adım geri git", chance:7},
+  {text:"3 adım geri git", chance:8},
+  {text:"5 adım ileri git ve rakip 1 adım geri gitsin", chance:8},
+  {text:"2 adım geri git", chance:12}
+];
+
+function secimYap() {
+  let toplam = 0;
+  sesler.forEach(s => toplam += s.chance);
+
+  let rastgele = Math.random() * toplam;
+
+  let birikim = 0;
+  for (let s of sesler) {
+    birikim += s.chance;
+    if (rastgele <= birikim) return s.text;
+  }
+}
+
+btn.onclick = () => {
+  btn.style.display = "none";
+
+  const sonuc = secimYap();
+
+  // Sesli okuma
+  if ("speechSynthesis" in window) {
+    const konus = new SpeechSynthesisUtterance(sonuc);
+    konus.lang = "tr-TR";
+    
+    konus.onend = () => {
+      btn.style.display = "inline-block";
+    };
+
+    speechSynthesis.speak(konus);
+  } else {
+    alert("Tarayıcı desteklemiyor!");
+    btn.style.display = "inline-block";
+  }
+};
+</script>
+
+</body>
+</html>
